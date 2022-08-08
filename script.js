@@ -31,17 +31,20 @@ let b = 0;
 let number = '';
 let sign;
 let signExists = false;
+let totalCheck = false;
 
 
 function addToDisplay(clickedSign) {
   const lastChar = display.textContent.slice(-1);
-  if (lastChar !== clickedSign && signs.includes(lastChar)) {
+  if (lastChar === clickedSign) return false;
+  if (signs.includes(lastChar)) {
     display.textContent = display.textContent.slice(0, -1);
     display.textContent += clickedSign;
     return false;
   }
   else {
     display.textContent += clickedSign;
+    totalCheck = false;
     return true;
   }
 }
@@ -65,7 +68,7 @@ function signFlow(clickedSign) {
 
 function signManage(buttonElement) {
   const clickedSign = buttonElement.innerText;
-  if (clickedSign === '=') {
+  if (!totalCheck && clickedSign === '=' && typeof (sign) !== 'undefined' && !signs.includes(display.textContent.slice(-1))) {
     b = parseInt(number);
     if (number === '') number = '0';
     total = operate(a, sign, b);
@@ -74,18 +77,19 @@ function signManage(buttonElement) {
     total = 0;
     b = 0;
     totalCheck = true;
+    number = '0';
   }
-  else {
+  if (signs.includes(clickedSign)) {
     if (addToDisplay(clickedSign)) signFlow(clickedSign);
     sign = clickedSign;
   }
-
 }
 
 function numberManage(buttonElement) {
   const clickedNumber = buttonElement.innerText;
   if (display.textContent === '0') display.textContent = '';
-  if (number !== '0' && clickedNumber !== '0') number += clickedNumber;
+  if (number !== '0') number += clickedNumber;
+
   display.textContent += buttonElement.innerText;
 }
 
