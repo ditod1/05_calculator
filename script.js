@@ -24,8 +24,8 @@ function operate(a, operator, b) {
 
 const btn = document.querySelectorAll('.buttons button');
 const display = document.querySelector('.display');
-let total = 0;
 const signs = ['+', '-', '*', '/']
+let total = 0;
 let a = 0;
 let b = 0;
 let number = '';
@@ -52,11 +52,12 @@ function addToDisplay(clickedSign) {
 function signFlow(clickedSign) {
   if (!signExists) {
     if (number === '') number = '0';
-    a = parseInt(number);
+    a = Math.round((parseInt(number) + Number.EPSILON) * 100) / 100;
     signExists = true;
   } else {
-    b = parseInt(number);
-    total = operate(a, sign, b);
+    ;
+    b = Math.round((parseInt(number) + Number.EPSILON) * 100) / 100;
+    total = Math.round((operate(a, sign, b) + Number.EPSILON) * 100) / 100;
     console.log(a, b, total, sign)
     display.textContent = `${total}${clickedSign}`;
     a = total;
@@ -69,9 +70,9 @@ function signFlow(clickedSign) {
 function signManage(buttonElement) {
   const clickedSign = buttonElement.innerText;
   if (!totalCheck && clickedSign === '=' && typeof (sign) !== 'undefined' && !signs.includes(display.textContent.slice(-1))) {
-    b = parseInt(number);
+    b = Math.round((parseInt(number) + Number.EPSILON) * 100) / 100;
     if (number === '') number = '0';
-    total = operate(a, sign, b);
+    total = Math.round((operate(a, sign, b) + Number.EPSILON) * 100) / 100;
     display.textContent = `${total}`;
     a = total;
     total = 0;
@@ -89,15 +90,25 @@ function numberManage(buttonElement) {
   const clickedNumber = buttonElement.innerText;
   if (display.textContent === '0') display.textContent = '';
   if (number !== '0') number += clickedNumber;
-
   display.textContent += buttonElement.innerText;
 }
 
+function clearProgram() {
+  total = 0;
+  a = 0;
+  b = 0;
+  number = '';
+  let sign;
+  signExists = false;
+  totalCheck = false;
+  display.textContent = '0';
+}
 
 function buttonChoice(e) {
   buttonElement = e.target;
   if (buttonElement.className === 'sign') signManage(buttonElement);
   if (buttonElement.className === 'number') numberManage(buttonElement);
+  if (buttonElement.id === 'CL') clearProgram();
 }
 
 btn.forEach(button => {
