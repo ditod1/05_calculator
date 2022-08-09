@@ -36,6 +36,7 @@ let totalCheck = false;
 
 function addToDisplay(clickedSign) {
   const lastChar = display.textContent.slice(-1);
+  console.log(a, b, sign, lastChar);
   if (lastChar === clickedSign) return false;
   if (signs.includes(lastChar)) {
     display.textContent = display.textContent.slice(0, -1);
@@ -44,6 +45,7 @@ function addToDisplay(clickedSign) {
   }
   else {
     display.textContent += clickedSign;
+    if (totalCheck) signExists = false;
     totalCheck = false;
     return true;
   }
@@ -52,17 +54,22 @@ function addToDisplay(clickedSign) {
 function signFlow(clickedSign) {
   if (!signExists) {
     if (number === '') number = '0';
-    a = Math.round((parseInt(number) + Number.EPSILON) * 100) / 100;
+    a = Math.round((parseFloat(number) + Number.EPSILON) * 100) / 100;
     signExists = true;
   } else {
     ;
-    b = Math.round((parseInt(number) + Number.EPSILON) * 100) / 100;
+    b = Math.round((parseFloat(number) + Number.EPSILON) * 100) / 100;
     total = Math.round((operate(a, sign, b) + Number.EPSILON) * 100) / 100;
-    console.log(a, b, total, sign)
-    display.textContent = `${total}${clickedSign}`;
-    a = total;
-    total = 0;
+    if (isNaN(total) || !isFinite(total)) {
+      display.textContent = `You can't divide by 0!`;
+      a = 0;
+    }
+    else {
+      display.textContent = `${total}${clickedSign}`;
+      a = total;
+    }
     b = 0;
+    total = 0;
   }
   number = '';
 }
@@ -70,15 +77,22 @@ function signFlow(clickedSign) {
 function signManage(buttonElement) {
   const clickedSign = buttonElement.innerText;
   if (!totalCheck && clickedSign === '=' && typeof (sign) !== 'undefined' && !signs.includes(display.textContent.slice(-1))) {
-    b = Math.round((parseInt(number) + Number.EPSILON) * 100) / 100;
+    b = Math.round((parseFloat(number) + Number.EPSILON) * 100) / 100;
     if (number === '') number = '0';
     total = Math.round((operate(a, sign, b) + Number.EPSILON) * 100) / 100;
-    display.textContent = `${total}`;
-    a = total;
+    if (isNaN(total) || !isFinite(total)) {
+      display.textContent = `You can't divide by 0!`;
+      a = 0;
+    }
+    else {
+      display.textContent = `${total}`;
+      console.log(total)
+      number = `${total}`;
+      a = total;
+    }
     total = 0;
     b = 0;
     totalCheck = true;
-    number = '0';
   }
   if (signs.includes(clickedSign)) {
     if (addToDisplay(clickedSign)) signFlow(clickedSign);
@@ -106,9 +120,10 @@ function clearProgram() {
 
 function buttonChoice(e) {
   buttonElement = e.target;
+  if (buttonElement.id === 'CL' || display.textContent === `You can't divide by 0!`) clearProgram();
   if (buttonElement.className === 'sign') signManage(buttonElement);
   if (buttonElement.className === 'number') numberManage(buttonElement);
-  if (buttonElement.id === 'CL') clearProgram();
+
 }
 
 btn.forEach(button => {
