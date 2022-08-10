@@ -25,13 +25,12 @@ function insertNumber(pressedButton) {
 function evaluateResult() {
   if (currentSign === null) return
   if (currentSign === '/' && display.textContent.charAt(firstNuLength) === '0') {
-    alert("You can't divide by 0!");
+    alert("You can't divide by 0");
     divZeroCheck = true;
     return
   }
-  secondNumber = display.textContent.substring(firstNuLength);
   display.textContent = roundResult(
-    operate(firstNumber, currentSign, secondNumber)
+    operate(firstNumber, currentSign, getSecondNumber())
   )
   currentSign = null
 }
@@ -44,7 +43,7 @@ function signManage(pressedButton) {
   const lastChar = signs.includes(display.textContent.slice(-1));
   if (currentSign !== null && !lastChar) evaluateResult();
   if (divZeroCheck) {
-    display.textContent = firstNumber;
+    display.textContent = firstNumber + pressedButton;
     divZeroCheck = false;
   } else {
     if (lastChar) {
@@ -57,6 +56,30 @@ function signManage(pressedButton) {
   }
 }
 
+function clearProgram() {
+  firstNumber = '';
+  secondNumber = '';
+  currentSign = null;
+  firstNuLength = 0;
+  divZeroCheck = false;
+  firstNuCheck = false;
+  display.textContent = '0';
+}
+
+function getSecondNumber() {
+  return secondNumber = display.textContent.substring(firstNuLength);
+}
+
+function dotManage() {
+  if (!display.textContent.includes('.') || !(getSecondNumber().includes('.')))
+    display.textContent += '.';
+}
+
+function delManage() {
+  display.textContent = display.textContent.slice(0, -1);
+  if (display.textContent === '') display.textContent = '0';
+}
+
 
 function buttonChoice(e) {
   const buttonElement = e.target;
@@ -65,12 +88,31 @@ function buttonChoice(e) {
   if (buttonElement.className === 'operator') signManage(pressedButton);
   if (buttonElement.className === 'number') insertNumber(pressedButton);
   if (buttonElement.id === 'dot') dotManage();
+  if (buttonElement.id === 'delete') delManage();
   if (buttonElement.id === 'equal') evaluateResult();
+  if (divZeroCheck) {
+    divZeroCheck = false;
+    display.textContent = firstNumber;
+    currentSign = null;
+  }
+}
+
+function logKey(e) {
+  console.log(e.key)
+  if (e.key >= 0 && e.key <= 9) insertNumber(e.key);
+  if (e.key === '.') dotManage();
+  if (e.key === '=' || e.key === 'Enter') evaluateResult();
+  if (e.key === 'Backspace') delManage();
+  if (e.key === 'Escape') clearProgram();
+  if (signs.includes(e.key))
+    signManage(e.key);
 }
 
 btn.forEach(button => {
   button.addEventListener('click', buttonChoice);
 });
+
+window.addEventListener('keydown', logKey);
 
 //Operations
 function sum(a, b) {
