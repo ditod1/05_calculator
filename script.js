@@ -102,6 +102,11 @@ function logKey(e) {
   if (e.key >= 0 && e.key <= 9) insertNumber(e.key);
   if (e.key === '.') dotManage();
   if (e.key === '=' || e.key === 'Enter') evaluateResult();
+  if (divZeroCheck) {
+    divZeroCheck = false;
+    display.textContent = firstNumber;
+    currentSign = null;
+  }
   if (e.key === 'Backspace') delManage();
   if (e.key === 'Escape') clearProgram();
   if (signs.includes(e.key))
