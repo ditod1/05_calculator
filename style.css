@@ -2,26 +2,35 @@ body {
   display: flex;
   justify-content: center;
   margin-top: 150px;
+  font-family: 'Roboto';
+  font-size: 20px;
 }
 
 .calculator-container {
-  background-color: aliceblue;
-  padding: 10px;
+  background-color: rgb(50, 47, 47);
+  border-radius: 10px;
+  padding: 10px
 }
 
 .display {
-  background-color: white;
+  font-size: 30px;
+  background-color: rgb(206, 206, 206);
+  border-radius: 5px;
   margin: 5px auto;
   text-align: right;
-  padding: 10px 10px;
+  padding: 3px 10px;
 }
 
 
 .buttons button {
+  color: rgb(50, 47, 47);
+  font-size: 20px;
   margin: 1px;
   width: 55px;
   height: 40px;
-  border-radius: 5px;
+  border-width: 1px;
+  border-color: black;
+  border-radius: 3px;
 }
 
 .horizontal {
